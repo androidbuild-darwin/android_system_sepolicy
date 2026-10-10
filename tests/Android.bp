@@ -16,6 +16,13 @@ cc_library_host_shared {
     export_include_dirs: ["include"],
     stl: "c++_static",
 
+    target: {
+        darwin: {
+            // Keep the static C++ runtime private when loaded into Python.
+            unexported_symbols_list: "libsepolwrap.darwin.unexported",
+        },
+    },
+
     // libsepolwrap gets loaded from the system python, which does not have the
     // ASAN runtime. So turn off sanitization for ourself, and  use static
     // libraries, since the shared libraries will use ASAN.
