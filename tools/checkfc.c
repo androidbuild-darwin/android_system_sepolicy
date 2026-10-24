@@ -306,14 +306,14 @@ static void do_test_data_and_die_on_error(struct selinux_opt opts[], unsigned in
     char line[1024];
     bool non_matching_entries = false;
     while (fgets(line, sizeof(line), test_data)) {
-        char *path;
-        char *expected_type;
+        char path[sizeof(line)];
+        char expected_type[sizeof(line)];
 
         if (!strcmp(line, "\n") || line[0] == '#') {
             continue;
         }
 
-        int ret = sscanf(line, "%ms %ms", &path, &expected_type);
+        int ret = sscanf(line, "%1023s %1023s", path, expected_type);
         if (ret != 2) {
             fprintf(stderr, "Error: unable to parse the line %s\n", line);
             exit(1);
@@ -337,8 +337,6 @@ static void do_test_data_and_die_on_error(struct selinux_opt opts[], unsigned in
 
         free(found_context);
         context_free(found);
-        free(path);
-        free(expected_type);
     }
     fclose(test_data);
 
